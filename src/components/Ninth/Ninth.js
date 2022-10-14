@@ -35,7 +35,7 @@ function Ninth({ stepper, setStepper, data, setData }) {
   const saveDetailsApi = async () => {
     var config = {
       method: "post",
-      url: "http://localhost:9000/product/store",
+      url: "https://secret-reef-17136.herokuapp.com/product/store",
       headers: {
         "Content-Type": "application/json",
       },
