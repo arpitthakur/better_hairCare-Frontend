@@ -23,7 +23,7 @@ function App() {
     
   </Routes>
 </BrowserRouter>
-  const [stepper, setStepper] = useState(1);
+  const [stepper, setStepper] = useState(10);
   const [data,setData] = useState({
 
   })

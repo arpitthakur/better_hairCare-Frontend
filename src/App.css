@@ -12,6 +12,10 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
+.invalidInput{
+  color:red;
+  float:left;
+}
 
 .App-header {
   background-color: #282c34;

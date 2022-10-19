@@ -23,7 +23,7 @@ export default function CheckoutForm() {
         // 3️⃣ Create PaymentIntent and fetch client secret as soon as the page loads
         var config = {
             method: 'post',
-            url: 'https://secret-reef-17136.herokuapp.com/product/create_payment',
+            url: 'http://localhost:9000/product/create_payment',
             headers: {}
         };
 
@@ -84,7 +84,7 @@ export default function CheckoutForm() {
                     <div className="card-error" role="alert">{error}</div>
                 )}
                 {/* Show a success message upon completion */}
-                <p className={succeeded ? "result-message" : "result-message hidden"}>Payment succeeded!</p>
+                {/* <p className={succeeded ? "result-message" : "result-message hidden"}>Payment succeeded!</p> */}
             </form>
         </div>
     );

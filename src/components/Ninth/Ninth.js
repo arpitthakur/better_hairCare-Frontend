@@ -4,38 +4,111 @@ import { stepperFunc } from "../../helper/stepperFunc";
 import { stepperFuncdecrement } from "../../helper/stepperFunc";
 function Ninth({ stepper, setStepper, data, setData }) {
   const [state, setState] = useState({});
-  const validate = () => {
-    let tmp=state
-    console.log(state);
-    if (
-      tmp.name&&
-      tmp.street&&
-      tmp.city&&
-      tmp.state&&
-      tmp.postcode&&
-      tmp.country&&
-      tmp.phone_number
-    ) {
-    
-      setData((old) => {
-        let tmp = { ...old };
-        tmp.delivery_details = { ...state };
-        return tmp;
-      });
-      saveDetailsApi();
-    } else {
-      alert("field required");
+  const [formValidate, setformValidate] = useState({
+    name: false,
+    street: false,
+    state: false,
+    city: false,
+    postcode: false,
+    country: false,
+    phone_number: false,
+    email: false
+  })
+  useEffect(() => {
+    console.log(formValidate)
+  }, [formValidate])
+  const validate = (e) => {
+    let flag=true
+
+    if (!state.name) {
+      flag=false
+      setformValidate((old) => {
+        old.name = "Please Enter your name*"
+        return { ...old }
+      })
     }
-    // if(state.name!=''){
-    //   alert("success")
-    // }else{
-    //   alert("name required")
+    if (state.name&&(state.name).length<3) {
+      flag=false
+      setformValidate((old) => {
+        old.name = "Name char should be more than three*"
+        return { ...old }
+      })
+    }
+    if(!state.street){
+      flag=false
+      setformValidate((old) => {
+        old.street = "Required*"
+        return { ...old }
+      })
+    }
+    if(!state.city){
+      flag=false
+      setformValidate((old) => {
+        old.city = "Required*"
+        return { ...old }
+      })
+    }
+    if(!state.state){
+      flag=false
+      setformValidate((old) => {
+        old.state = "Required*"
+        return { ...old }
+      })
+    }
+    if(!state.postcode){
+      flag=false
+      setformValidate((old) => {
+        old.postcode = "Required*"
+        return { ...old }
+      })
+    }
+    if(!state.country){
+      flag=false
+      setformValidate((old) => {
+        old.country = "Required*"
+        return { ...old }
+      })
+    }
+    if(state.phone_number&&(state.phone_number).length<10){
+      flag=false
+      setformValidate((old) => {
+        old.phone_number = "Phone number should be 10 digit*"
+        return { ...old }
+      })
+    }
+    if(!state.phone_number){
+      flag=false
+      setformValidate((old) => {
+        old.phone_number = "Required*"
+        return { ...old }
+      })
+    }
+    // if(!state.email){
+    //   setformValidate((old) => {
+    //     old.email = "Required*"
+    //     return { ...old }
+    //   })
     // }
+    if(state.email&&!(state.email).includes(".com", '@')){
+      flag=false
+      setformValidate((old) => {
+        old.email = "Enter valid email address*"
+        return { ...old }
+      })
+    }
+    if(flag){
+      setData((old)=>{
+        let tmp={...old}
+        tmp.delivery_details={...state}
+        return {...tmp}
+      })
+      saveDetailsApi()
+    }
   };
   const saveDetailsApi = async () => {
     var config = {
       method: "post",
-      url: "https://secret-reef-17136.herokuapp.com/product/store",
+      url: "http://localhost:9000/product/store",
       headers: {
         "Content-Type": "application/json",
       },
@@ -55,38 +128,55 @@ function Ninth({ stepper, setStepper, data, setData }) {
   const changeHandler = (value, key) => {
     setState((old) => {
       let temp = { ...old };
-      temp[key] = value;
-      return temp;
+      if(key=='phone_number'){
+        if(value.length>10){
+          console.log(value.length)
+          // temp.phone_number=temp.phone_number
+          return {...temp}
+        } 
+      }
+        console.log("else")
+        temp[key] = value;
+        return temp;
     });
+
+    setformValidate((old)=>{
+      let temp = { ...old};
+      temp[key] = false;
+      return temp;
+
+    })
   };
+
   useEffect(() => {
     console.log(state);
   }, [state]);
   return (
     <div className="container">
-            <div className="top_header_row">
-    <div className="top_logo_colom">
-     <button onClick={() => stepperFuncdecrement(stepper, setStepper)}>
-     <img src = "arrow.png"></img> Back 
-      </button>
+      <div className="top_header_row">
+        <div className="top_logo_colom">
+          <button onClick={() => stepperFuncdecrement(stepper, setStepper)}>
+            <img src="arrow.png"></img> Back
+          </button>
+        </div>
+        <div className="main-logo">
+          <img src="main_logo.png"></img>
+        </div>
       </div>
-    <div className="main-logo">
-      <img src = "main_logo.png"></img>
-    </div>
-    </div>
       <div className="text text-center main_bg_colors">
         <h2>Delivery Details</h2>
-
         <div className="form">
           <div className="enter_name col-12 commnn_pt">
             <input
               type="text"
               name="name"
-              placeholder="What's your name?*"
+              required
+              placeholder="What's your name?"
               onChange={(e) => {
                 changeHandler(e.target.value, "name");
               }}
             ></input>
+            {formValidate.name && <span className="invalidInput">{formValidate.name}</span>}
           </div>
           <div className="contect_info commnn_pt">
             <div className="row">
@@ -95,48 +185,55 @@ function Ninth({ stepper, setStepper, data, setData }) {
                 <input
                   type="text"
                   name="Street"
-                  placeholder="Street*"
+                  placeholder="Street"
                   onChange={(e) => {
                     changeHandler(e.target.value, "street");
                   }}
                 ></input>
+                {formValidate.street && <span className="invalidInput">{formValidate.street}</span>}
                 <input
                   type="text"
                   name="State"
-                  placeholder="State*"
+                  placeholder="State"
                   onChange={(e) => {
                     changeHandler(e.target.value, "state");
                   }}
                 ></input>
+                {formValidate.state && <span className="invalidInput">{formValidate.state}</span>}
+
               </div>
 
               <div className="col-6">
                 <input
                   type="text"
                   name="City"
-                  placeholder="City/Suburb*"
+                  placeholder="City/Suburb"
                   onChange={(e) => {
                     changeHandler(e.target.value, "city");
                   }}
                 ></input>
+                {formValidate.city && <span className="invalidInput">{formValidate.city}</span>}
                 <input
                   type="number"
                   name="postcode"
-                  placeholder="Zip/Post Code*"
+                  placeholder="Zip/Post Code"
                   onChange={(e) => {
                     changeHandler(e.target.value, "postcode");
                   }}
                 ></input>
+                {formValidate.postcode && <span className="invalidInput">{formValidate.postcode}</span>}
               </div>
               <div className="col-12">
                 <input
                   type="text"
                   name="Country"
-                  placeholder="Country*"
+                  placeholder="Country"
                   onChange={(e) => {
                     changeHandler(e.target.value, "country");
                   }}
                 ></input>
+                {formValidate.country && <span className="invalidInput">{formValidate.country}</span>}
+
               </div>
             </div>
           </div>
@@ -144,22 +241,29 @@ function Ninth({ stepper, setStepper, data, setData }) {
             <input
               type="number"
               name="Phone number"
-              placeholder="Delivery Contact Phone Number*"
+              maxLength={10}
+              minLength={1}
+              placeholder="Delivery Contact Phone Number"
               onChange={(e) => {
                 changeHandler(e.target.value, "phone_number");
               }}
+              value={state?.phone_number?state.phone_number:''}
             ></input>
+            {formValidate.phone_number && <span className="invalidInput">{formValidate.phone_number}</span>}
+
 
             <input
               type="text"
               name="Email"
-              placeholder=" Delivery Contact Email Address*"
+              placeholder=" Delivery Contact Email Address"
               onChange={(e) => {
                 changeHandler(e.target.value, "email");
               }}
             ></input>
+            {formValidate.email && <span className="invalidInput">{formValidate.email}</span>}
+
           </div>
-          <button className="submit_btn" onClick={validate}>Submit$1234</button>
+          <button className="submit_btn" onClick={(e) => { validate(e) }}>Submit$1234</button>
           {/* <a href="#" className="send_icon_btn">
           send
           </a> */}

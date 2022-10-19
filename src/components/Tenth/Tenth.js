@@ -27,6 +27,7 @@ function Tenth({stepper,setStepper}) {
       <img src = "main_logo.png"></img>
     </div>
     </div>
+    <input type ="text"placeholder='Card holdersname'id="payement"></input>
       <Elements stripe={stripePromise}>
       <CheckoutForm />
     </Elements>
